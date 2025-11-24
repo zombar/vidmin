@@ -1,11 +1,18 @@
 import { test, expect } from '@playwright/test';
 import { _electron as electron } from 'playwright';
 
+// Helper to get launch options with CI-specific flags
+const getLaunchOptions = (additionalArgs: string[] = []) => ({
+  args: [
+    'dist/main/main.js',
+    ...(process.env.CI ? ['--no-sandbox', '--disable-setuid-sandbox'] : []),
+    ...additionalArgs,
+  ],
+});
+
 test.describe('Application Launch', () => {
   test('should launch electron app successfully', async () => {
-    const app = await electron.launch({
-      args: ['dist/main/main.js'],
-    });
+    const app = await electron.launch(getLaunchOptions());
 
     const window = await app.firstWindow();
     expect(window).toBeTruthy();
@@ -14,7 +21,7 @@ test.describe('Application Launch', () => {
   });
 
   test('should display main window with correct title', async () => {
-    const app = await electron.launch({ args: ['dist/main/main.js'] });
+    const app = await electron.launch(getLaunchOptions());
     const window = await app.firstWindow();
 
     const title = await window.title();
@@ -24,7 +31,7 @@ test.describe('Application Launch', () => {
   });
 
   test('should have correct window dimensions', async () => {
-    const app = await electron.launch({ args: ['dist/main/main.js'] });
+    const app = await electron.launch(getLaunchOptions());
     const window = await app.firstWindow();
 
     const size = await window.evaluate(() => ({
@@ -39,7 +46,7 @@ test.describe('Application Launch', () => {
   });
 
   test('should render React app root element', async () => {
-    const app = await electron.launch({ args: ['dist/main/main.js'] });
+    const app = await electron.launch(getLaunchOptions());
     const window = await app.firstWindow();
 
     const root = await window.locator('#root');
@@ -49,7 +56,7 @@ test.describe('Application Launch', () => {
   });
 
   test('should display app header', async () => {
-    const app = await electron.launch({ args: ['dist/main/main.js'] });
+    const app = await electron.launch(getLaunchOptions());
     const window = await app.firstWindow();
 
     // Wait for page to load
@@ -67,7 +74,7 @@ test.describe('Application Launch', () => {
 test.describe('Development Environment', () => {
   test('should have DevTools available in development mode', async () => {
     const app = await electron.launch({
-      args: ['dist/main/main.js'],
+      ...getLaunchOptions(),
       env: { NODE_ENV: 'development' },
     });
 
@@ -85,7 +92,7 @@ test.describe('Development Environment', () => {
 
 test.describe('IPC Communication', () => {
   test('should establish IPC communication between main and renderer', async () => {
-    const app = await electron.launch({ args: ['dist/main/main.js'] });
+    const app = await electron.launch(getLaunchOptions());
     const window = await app.firstWindow();
 
     // Wait for the app to load
@@ -103,7 +110,7 @@ test.describe('IPC Communication', () => {
   });
 
   test('should expose safe IPC API in renderer', async () => {
-    const app = await electron.launch({ args: ['dist/main/main.js'] });
+    const app = await electron.launch(getLaunchOptions());
     const window = await app.firstWindow();
 
     await window.waitForLoadState('domcontentloaded');
