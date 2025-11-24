@@ -1,0 +1,35 @@
+.file-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.select-file-button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #0066ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.select-file-button:hover:not(:disabled) {
+  background: #0052cc;
+}
+
+.select-file-button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.file-selector-hint {
+  font-size: 0.875rem;
+  color: #888;
+  margin: 0;
+}
