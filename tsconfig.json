@@ -17,6 +17,6 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["vite/client", "node", "vitest/globals", "@testing-library/jest-dom"]
   },
-  "include": ["src/renderer"],
+  "include": ["src/renderer", "src/preload/preload.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

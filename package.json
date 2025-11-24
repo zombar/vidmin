@@ -20,7 +20,8 @@
     "package": "npm run build && electron-builder",
     "type-check": "tsc --noEmit",
     "lint": "eslint src --ext .ts,.tsx",
-    "lint:fix": "eslint src --ext .ts,.tsx --fix"
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "prepare": "husky"
   },
   "keywords": [
     "electron",
@@ -36,6 +37,14 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "zustand": "^4.5.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ],
+    "src/**/*.{ts,tsx}": [
+      "bash -c 'npm run type-check'"
+    ]
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
@@ -55,7 +64,9 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "husky": "^9.1.7",
     "jsdom": "^24.0.0",
+    "lint-staged": "^16.2.7",
     "playwright": "^1.41.0",
     "typescript": "^5.3.3",
     "vite": "^5.1.0",
