@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.1.2](https://github.com/zombar/vidmin/compare/vidmin-v0.1.1...vidmin-v0.1.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* improve build artifact upload patterns in release workflow ([7cf52a1](https://github.com/zombar/vidmin/commit/7cf52a1b01f94777bec4007cb122f3558dfe8059))
+* pass browser cookies when fetching YouTube video formats ([f3600d5](https://github.com/zombar/vidmin/commit/f3600d5d567dc66d7dbe3278b69104208066908b))
+* pass browser cookies when fetching YouTube video formats ([59b238c](https://github.com/zombar/vidmin/commit/59b238c688a0cdff123e4221c3335bfd44f0a692))
+* resolve TypeScript any type warnings ([2e545fc](https://github.com/zombar/vidmin/commit/2e545fcaf5ff96fda7313fd9326f6860393a0a1e))
+* trigger build workflow when release-please creates a release ([4fabd80](https://github.com/zombar/vidmin/commit/4fabd80b1824bfc7de4c45b11e01a24ed3b035c3))
+* trigger build workflow when release-please creates a release ([614c0cd](https://github.com/zombar/vidmin/commit/614c0cd55eac753fbb0606b2525f9074d2fc6a47))
+* use webUtils.getPathForFile for drag-drop in Electron 32+ ([19f018d](https://github.com/zombar/vidmin/commit/19f018db950a0d51b02d64ac16802d0f840391eb))
+* use webUtils.getPathForFile for drag-drop in Electron 32+ ([945da16](https://github.com/zombar/vidmin/commit/945da16d97785e573fa0b988f583be849731c020))
+
 ## [0.1.1](https://github.com/zombar/vidmin/compare/vidmin-v0.1.0...vidmin-v0.1.1) (2025-11-25)
 
 
