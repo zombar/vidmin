@@ -14,8 +14,18 @@ interface VideoMetadata {
   height: number;
 }
 
+interface VideoData {
+  filename: string;
+  path: string;
+  size: number;
+  format: string;
+  url: string;
+  createdAt: Date;
+  modifiedAt: Date;
+}
+
 function App() {
-  const [videoData, setVideoData] = useState<any>(null);
+  const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [metadata, setMetadata] = useState<VideoMetadata | null>(null);
 
   // Download state

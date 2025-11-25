@@ -21,17 +21,27 @@ interface DownloadProgress {
   error?: string;
 }
 
-export type { VideoFileData, DownloadProgress };
+interface VideoFormat {
+  format_id: string;
+  ext: string;
+  resolution: string;
+  filesize?: number;
+  format_note?: string;
+  vcodec?: string;
+  acodec?: string;
+}
+
+export type { VideoFileData, DownloadProgress, VideoFormat };
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
-    invoke: (channel: string, ...args: any[]) => ipcRenderer.invoke(channel, ...args),
-    on: (channel: string, func: (...args: any[]) => void) => {
-      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    invoke: (channel: string, ...args: unknown[]) => ipcRenderer.invoke(channel, ...args),
+    on: (channel: string, func: (...args: unknown[]) => void) => {
+      ipcRenderer.on(channel, (_event, ...args) => func(...args));
     },
-    removeListener: (channel: string, func: (...args: any[]) => void) => {
+    removeListener: (channel: string, func: (...args: unknown[]) => void) => {
       ipcRenderer.removeListener(channel, func);
     },
   },
@@ -50,7 +60,7 @@ contextBridge.exposeInMainWorld('electron', {
     getDefaultLocation: () => ipcRenderer.invoke('get-default-download-location') as Promise<string>,
     checkYtDlp: () => ipcRenderer.invoke('check-yt-dlp') as Promise<{ isInstalled: boolean }>,
     validateUrl: (url: string) => ipcRenderer.invoke('validate-url', url) as Promise<{ isValid: boolean; source: string | null }>,
-    fetchFormats: (url: string, cookiesFromBrowser?: string) => ipcRenderer.invoke('fetch-video-formats', url, cookiesFromBrowser) as Promise<any[]>,
+    fetchFormats: (url: string, cookiesFromBrowser?: string) => ipcRenderer.invoke('fetch-video-formats', url, cookiesFromBrowser) as Promise<VideoFormat[]>,
     start: (options: { url: string; downloadPath: string; filename: string; format: string }) => ipcRenderer.invoke('start-download', options) as Promise<{ success: boolean; downloadId?: string; error?: string }>,
     cancel: (id: string) => ipcRenderer.invoke('cancel-download', id) as Promise<{ success: boolean }>,
     getStatus: (id: string) => ipcRenderer.invoke('get-download-status', id) as Promise<DownloadProgress | null>,

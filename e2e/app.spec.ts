@@ -82,7 +82,7 @@ test.describe('Development Environment', () => {
       },
     });
 
-    const window = await app.firstWindow();
+    const _window = await app.firstWindow();
     const isDevToolsOpened = await app.evaluate(async ({ webContents }) => {
       return webContents.getAllWebContents()[0].isDevToolsOpened();
     });
