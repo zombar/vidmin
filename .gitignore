@@ -8,6 +8,7 @@ dist/
 build/
 !build/icon.icns
 !build/icon.ico
+!build/icon.png
 !build/entitlements.mac.plist
 out/
 release/
