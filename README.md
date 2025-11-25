@@ -1,7 +1,7 @@
 <div align="center">
   <img src="assets/repo_banner.webp" alt="Vidmin Banner"/>
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+  ![License: Non-Commercial](https://img.shields.io/badge/License-Non--Commercial-blue.svg)
 
 </div>
 
@@ -57,4 +57,12 @@ npm run test:e2e
 
 ## License
 
-MIT
+This project is licensed under the Vidmin Non-Commercial License (VNCL).
+
+**Key restrictions:**
+- Personal and educational use only
+- No commercial use or resale
+- No public redistribution or forking
+- Modifications for personal use only
+
+See the [LICENSE](LICENSE) file for full details. For commercial licensing inquiries, please contact the copyright holder.
