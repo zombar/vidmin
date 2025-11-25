@@ -48,7 +48,7 @@ contextBridge.exposeInMainWorld('electron', {
     getDefaultLocation: () => ipcRenderer.invoke('get-default-download-location') as Promise<string>,
     checkYtDlp: () => ipcRenderer.invoke('check-yt-dlp') as Promise<{ isInstalled: boolean }>,
     validateUrl: (url: string) => ipcRenderer.invoke('validate-url', url) as Promise<{ isValid: boolean; source: string | null }>,
-    fetchFormats: (url: string) => ipcRenderer.invoke('fetch-video-formats', url) as Promise<any[]>,
+    fetchFormats: (url: string, cookiesFromBrowser?: string) => ipcRenderer.invoke('fetch-video-formats', url, cookiesFromBrowser) as Promise<any[]>,
     start: (options: { url: string; downloadPath: string; filename: string; format: string }) => ipcRenderer.invoke('start-download', options) as Promise<{ success: boolean; downloadId?: string; error?: string }>,
     cancel: (id: string) => ipcRenderer.invoke('cancel-download', id) as Promise<{ success: boolean }>,
     getStatus: (id: string) => ipcRenderer.invoke('get-download-status', id) as Promise<DownloadProgress | null>,

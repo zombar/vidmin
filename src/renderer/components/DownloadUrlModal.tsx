@@ -15,23 +15,20 @@ export function DownloadUrlModal({ onClose, onDownload, initialUrl = '' }: Downl
   const [url, setUrl] = useState(initialUrl);
   const [formats, setFormats] = useState<VideoFormat[]>([]);
   const [selectedFormat, setSelectedFormat] = useState<string>('');
-  const [selectedBrowser, setSelectedBrowser] = useState<string>('none');
+  // Initialize from localStorage synchronously to avoid race condition
+   
+  const [selectedBrowser, setSelectedBrowser] = useState<string>(() => {
+    // eslint-disable-next-line no-undef
+    return localStorage.getItem('preferred-browser') || 'none';
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Load saved browser preference on mount
-  useEffect(() => {
-    // eslint-disable-next-line no-undef
-    const savedBrowser = localStorage.getItem('preferred-browser');
-    if (savedBrowser) {
-      setSelectedBrowser(savedBrowser);
-    }
-  }, []);
-
   useEffect(() => {
     if (initialUrl) {
-      handleFetchFormats(initialUrl);
+      handleFetchFormats(initialUrl, selectedBrowser);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialUrl]);
 
   // Auto-download if only one format is available
@@ -43,7 +40,7 @@ export function DownloadUrlModal({ onClose, onDownload, initialUrl = '' }: Downl
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formats, selectedFormat]);
 
-  const handleFetchFormats = async (videoUrl: string) => {
+  const handleFetchFormats = async (videoUrl: string, browser?: string) => {
     if (!videoUrl) return;
 
     setLoading(true);
@@ -52,7 +49,9 @@ export function DownloadUrlModal({ onClose, onDownload, initialUrl = '' }: Downl
     setSelectedFormat('');
 
     try {
-      const fetchedFormats = await window.electron.download.fetchFormats(videoUrl);
+      // Pass cookies from browser to help with YouTube bot detection
+      const cookiesParam = browser && browser !== 'none' ? browser : undefined;
+      const fetchedFormats = await window.electron.download.fetchFormats(videoUrl, cookiesParam);
       setFormats(fetchedFormats);
 
       // Auto-select the best format
@@ -61,7 +60,13 @@ export function DownloadUrlModal({ onClose, onDownload, initialUrl = '' }: Downl
         setSelectedFormat(bestFormat.format_id);
       }
     } catch (err) {
-      setError((err as Error).message || 'Failed to fetch video formats');
+      const errorMsg = (err as Error).message || 'Failed to fetch video formats';
+      // Provide helpful guidance if it's a YouTube bot detection error
+      if (errorMsg.includes('bot') || errorMsg.includes('Sign in')) {
+        setError('YouTube requires authentication. Please select a browser above where you are logged into YouTube, then try again.');
+      } else {
+        setError(errorMsg);
+      }
     } finally {
       setLoading(false);
     }
@@ -81,7 +86,7 @@ export function DownloadUrlModal({ onClose, onDownload, initialUrl = '' }: Downl
   };
 
   const handleFetchClick = () => {
-    handleFetchFormats(url);
+    handleFetchFormats(url, selectedBrowser);
   };
 
   const handleDownloadClick = () => {

@@ -157,15 +157,23 @@ export class DownloadManager extends EventEmitter {
     return 'other';
   }
 
-  async fetchFormats(url: string): Promise<VideoFormat[]> {
+  async fetchFormats(url: string, cookiesFromBrowser?: string): Promise<VideoFormat[]> {
     try {
       const ytDlp = await this.getYtDlp();
-      // Add extractor args to bypass Cloudflare protection
-      const info = await ytDlp.getVideoInfo([
+      // Build args array with extractor args and optional cookies
+      const args = [
         url,
         '--extractor-args',
-        'generic:impersonate',
-      ]);
+        'generic:impersonate;youtube:player_client=web',
+        '--no-check-certificates',
+      ];
+
+      // Add cookies-from-browser if specified (required for YouTube to avoid bot detection)
+      if (cookiesFromBrowser && cookiesFromBrowser !== 'none') {
+        args.push('--cookies-from-browser', cookiesFromBrowser);
+      }
+
+      const info = await ytDlp.getVideoInfo(args);
 
       // If no formats array, create a single format from the video info
       if (!info.formats || info.formats.length === 0) {
@@ -216,15 +224,22 @@ export class DownloadManager extends EventEmitter {
     this.downloads.set(downloadId, progress);
 
     try {
+      // Use flexible format selection that falls back gracefully
+      // If a specific format is requested, try it first, then fall back to best available
+      const formatSpec = options.format
+        ? `${options.format}/bestvideo*+bestaudio/best`
+        : 'bestvideo*+bestaudio/best';
+
       const ytDlpArgs = [
         '--format',
-        options.format || 'best',
+        formatSpec,
         '--output',
         options.outputPath,
         '--newline',
         '--no-playlist',
         '--extractor-args',
-        'generic:impersonate;youtube:player_client=default',
+        'generic:impersonate;youtube:player_client=web',
+        '--no-check-certificates',
       ];
 
       // Add cookies-from-browser if specified

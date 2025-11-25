@@ -65,8 +65,8 @@ export function setupIpcHandlers() {
   });
 
   // Fetch video formats
-  ipcMain.handle('fetch-video-formats', async (_event, url: string) => {
-    return await downloadManager.fetchFormats(url);
+  ipcMain.handle('fetch-video-formats', async (_event, url: string, cookiesFromBrowser?: string) => {
+    return await downloadManager.fetchFormats(url, cookiesFromBrowser);
   });
 
   // Start download
