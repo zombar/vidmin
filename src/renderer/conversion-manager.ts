@@ -176,8 +176,11 @@ export class ConversionManager {
   }
 
   needsConversion(format: string): boolean {
-    const unsupportedFormats = ['flv', 'wmv', 'avi', 'mkv', 'mov', 'mpg', 'mpeg', 'vob', 'ts', 'm2ts', 'mts'];
-    return unsupportedFormats.includes(format.toLowerCase());
+    // Only flag formats that are definitively incompatible with browser playback
+    // MKV, MOV, and other containers may work if they contain compatible codecs
+    // Let the player attempt to load first before forcing conversion
+    const definitelyUnsupportedFormats = ['flv', 'wmv', 'avi', 'mpg', 'mpeg', 'vob', 'ts', 'm2ts', 'mts', '3gp', 'rm', 'rmvb'];
+    return definitelyUnsupportedFormats.includes(format.toLowerCase());
   }
 
   getSupportedFormats(): string[] {

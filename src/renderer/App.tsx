@@ -130,6 +130,18 @@ function App() {
     setMetadata(meta);
   };
 
+  const handleVideoLoadError = () => {
+    // Video failed to load (likely incompatible codecs)
+    // Offer conversion
+    if (videoData) {
+      setConversionVideoPath(videoData.path);
+      setConversionFormat(videoData.format);
+      setShowConversionDialog(true);
+      // Clear the video to stop error display
+      setVideoData(null);
+    }
+  };
+
   const handleConvert = async (outputFormat: 'mp4' | 'webm', quality: 'high' | 'medium' | 'low') => {
     setConversionStatus('loading');
     setConversionProgress(0);
@@ -305,6 +317,7 @@ function App() {
               videoUrl={videoData.url}
               filename={videoData.filename}
               onMetadataLoad={handleMetadataLoad}
+              onLoadError={handleVideoLoadError}
             />
 
             <FloatingActionButtons

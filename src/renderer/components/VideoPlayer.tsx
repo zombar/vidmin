@@ -9,9 +9,10 @@ interface VideoPlayerProps {
   videoUrl?: string;
   filename?: string;
   onMetadataLoad?: (metadata: { duration: number; width: number; height: number }) => void;
+  onLoadError?: () => void;
 }
 
-export function VideoPlayer({ videoUrl, filename, onMetadataLoad }: VideoPlayerProps) {
+export function VideoPlayer({ videoUrl, filename, onMetadataLoad, onLoadError }: VideoPlayerProps) {
   const playerRef = useRef<globalThis.HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -96,6 +97,11 @@ export function VideoPlayer({ videoUrl, filename, onMetadataLoad }: VideoPlayerP
           code: mediaError.code,
           message: mediaError.message,
         });
+
+        // Notify parent component of load error (likely unsupported codec)
+        if (mediaError.code === 4 && onLoadError) { // MEDIA_ERR_SRC_NOT_SUPPORTED
+          onLoadError();
+        }
       }
     }
   };
