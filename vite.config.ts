@@ -9,6 +9,9 @@ export default defineConfig({
     outDir: 'dist/renderer',
     emptyOutDir: true,
   },
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg', '@ffmpeg/util'],
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src/renderer'),

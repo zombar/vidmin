@@ -40,7 +40,7 @@ describe.sequential('FileSelector Component', () => {
     render(<FileSelector onFileSelected={onFileSelected} />);
 
     expect(screen.getByText(/Supported formats/i)).toBeInTheDocument();
-    expect(screen.getByText(/MP4.*WebM.*MKV.*AVI.*MOV/i)).toBeInTheDocument();
+    expect(screen.getByText(/MP4.*WebM.*MKV.*AVI.*MOV.*FLV.*WMV.*TS.*MPG.*MPEG.*VOB/i)).toBeInTheDocument();
   });
 
   it('should call onFileSelected when file is selected', async () => {
@@ -50,7 +50,7 @@ describe.sequential('FileSelector Component', () => {
       path: '/path/to/test.mp4',
       size: 1024,
       format: 'mp4',
-      url: 'file:///path/to/test.mp4',
+      url: 'vidmin:/path/to/test.mp4',
       createdAt: new Date(),
       modifiedAt: new Date(),
     };

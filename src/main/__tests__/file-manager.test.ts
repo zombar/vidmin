@@ -119,18 +119,18 @@ describe('File Manager', () => {
   });
 
   describe('getVideoFileUrl', () => {
-    it('should convert file path to file:// URL', () => {
+    it('should convert file path to vidmin: URL', () => {
       const filePath = '/path/to/video.mp4';
       const url = getVideoFileUrl(filePath);
 
-      expect(url).toBe('file:///path/to/video.mp4');
+      expect(url).toBe('vidmin:/path/to/video.mp4');
     });
 
     it('should handle paths with spaces', () => {
       const filePath = '/path/to/my video.mp4';
       const url = getVideoFileUrl(filePath);
 
-      expect(url).toContain('file://');
+      expect(url).toContain('vidmin:');
       expect(url).toContain('my video.mp4');
     });
   });

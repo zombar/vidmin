@@ -3,6 +3,8 @@ import { FileSelector } from './components/FileSelector';
 import { VideoPlayer } from './components/VideoPlayer';
 import { UrlInput } from './components/UrlInput';
 import { DownloadProgress } from './components/DownloadProgress';
+import { ConversionDialog } from './components/ConversionDialog';
+import { conversionManager } from './conversion-manager';
 import type { VideoFileData, DownloadProgress as DownloadProgressType } from '../preload/preload.d';
 import './App.css';
 
@@ -24,6 +26,14 @@ function App() {
   const [currentDownload, setCurrentDownload] = useState<DownloadProgressType | null>(null);
   const [ytDlpInstalled, setYtDlpInstalled] = useState(true);
 
+  // Conversion state
+  const [showConversionDialog, setShowConversionDialog] = useState(false);
+  const [conversionVideoPath, setConversionVideoPath] = useState('');
+  const [conversionFormat, setConversionFormat] = useState('');
+  const [conversionProgress, setConversionProgress] = useState(0);
+  const [conversionStatus, setConversionStatus] = useState<'idle' | 'loading' | 'converting' | 'error'>('idle');
+  const [conversionError, setConversionError] = useState('');
+
   useEffect(() => {
     // Check if yt-dlp is installed
     window.electron.download.checkYtDlp().then(({ isInstalled }: { isInstalled: boolean }) => {
@@ -43,13 +53,30 @@ function App() {
     const cleanupComplete = window.electron.download.onComplete(async (_id: string, path: string) => {
       // Auto-load the downloaded video
       try {
+        // eslint-disable-next-line no-console
+        console.log('[App] Download complete, loading video:', path);
         const metadata = await window.electron.video.getMetadata(path);
-        const url = `file://${path}`;
-        setVideoData({
-          ...metadata,
-          url,
-        });
-        setCurrentDownload(null);
+        // eslint-disable-next-line no-console
+        console.log('[App] Video metadata:', metadata);
+
+        // Check if format needs conversion
+        if (conversionManager.needsConversion(metadata.format)) {
+          // Show conversion dialog instead of loading directly
+          setConversionVideoPath(path);
+          setConversionFormat(metadata.format);
+          setShowConversionDialog(true);
+          setCurrentDownload(null);
+        } else {
+          // Format is compatible, load directly
+          const url = `vidmin:${path}`;
+          // eslint-disable-next-line no-console
+          console.log('[App] Loading video with URL:', url);
+          setVideoData({
+            ...metadata,
+            url,
+          });
+          setCurrentDownload(null);
+        }
       } catch (error) {
         console.error('Failed to load downloaded video:', error);
       }
@@ -67,8 +94,26 @@ function App() {
   }, []);
 
   const handleFileSelected = (fileData: VideoFileData | null) => {
-    setVideoData(fileData);
-    setMetadata(null);
+    if (!fileData) {
+      setVideoData(null);
+      setMetadata(null);
+      return;
+    }
+
+    // Check if the file format needs conversion
+    if (conversionManager.needsConversion(fileData.format)) {
+      // eslint-disable-next-line no-console
+      console.log('[App] File needs conversion:', fileData.format);
+      setConversionVideoPath(fileData.path);
+      setConversionFormat(fileData.format);
+      setShowConversionDialog(true);
+    } else {
+      // Format is compatible, load directly
+      // eslint-disable-next-line no-console
+      console.log('[App] File can play directly:', fileData.format);
+      setVideoData(fileData);
+      setMetadata(null);
+    }
   };
 
   const handleMetadataLoad = (meta: VideoMetadata) => {
@@ -118,7 +163,7 @@ function App() {
 
     try {
       const metadata = await window.electron.video.getMetadata(path);
-      const url = `file://${path}`;
+      const url = `vidmin:${path}`;
       setVideoData({
         ...metadata,
         url,
@@ -127,6 +172,61 @@ function App() {
     } catch (error) {
       console.error('Failed to load downloaded video:', error);
     }
+  };
+
+  const handleConvert = async (outputFormat: 'mp4' | 'webm', quality: 'high' | 'medium' | 'low') => {
+    setConversionStatus('loading');
+    setConversionProgress(0);
+    setConversionError('');
+
+    try {
+      const inputPath = conversionVideoPath;
+      const outputPath = inputPath.replace(/\.[^/.]+$/, `.${outputFormat}`);
+
+      await conversionManager.convertVideo({
+        inputPath,
+        outputPath,
+        outputFormat,
+        quality,
+        onProgress: (progress) => {
+          setConversionProgress(progress);
+          if (progress > 0) {
+            setConversionStatus('converting');
+          }
+        },
+        onComplete: async () => {
+          // Load the converted video
+          try {
+            const metadata = await window.electron.video.getMetadata(outputPath);
+            const url = `vidmin:${outputPath}`;
+            setVideoData({
+              ...metadata,
+              url,
+            });
+            setShowConversionDialog(false);
+            setConversionStatus('idle');
+          } catch (error) {
+            console.error('Failed to load converted video:', error);
+            setConversionError('Failed to load converted video');
+            setConversionStatus('error');
+          }
+        },
+        onError: (error) => {
+          setConversionError(error.message);
+          setConversionStatus('error');
+        },
+      });
+    } catch (error) {
+      setConversionError((error as Error).message);
+      setConversionStatus('error');
+    }
+  };
+
+  const handleCancelConversion = () => {
+    setShowConversionDialog(false);
+    setConversionStatus('idle');
+    setConversionProgress(0);
+    setConversionError('');
   };
 
   const formatDuration = (seconds: number) => {
@@ -264,6 +364,18 @@ function App() {
           </>
         )}
       </main>
+
+      {showConversionDialog && (
+        <ConversionDialog
+          inputPath={conversionVideoPath}
+          inputFormat={conversionFormat}
+          onConvert={handleConvert}
+          onCancel={handleCancelConversion}
+          progress={conversionProgress}
+          status={conversionStatus}
+          error={conversionError}
+        />
+      )}
     </div>
   );
 }

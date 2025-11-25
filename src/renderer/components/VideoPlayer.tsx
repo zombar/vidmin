@@ -67,12 +67,36 @@ export function VideoPlayer({ videoUrl, filename, onMetadataLoad }: VideoPlayerP
 
   const handleLoadedMetadata = (nativeEvent: globalThis.Event) => {
     const target = nativeEvent.target as globalThis.HTMLVideoElement;
+    // eslint-disable-next-line no-console
+    console.log('[VideoPlayer] Loaded metadata:', {
+      duration: target.duration,
+      width: target.videoWidth,
+      height: target.videoHeight,
+      src: videoUrl,
+    });
     if (onMetadataLoad) {
       onMetadataLoad({
         duration: target.duration,
         width: target.videoWidth,
         height: target.videoHeight,
       });
+    }
+  };
+
+  const handleError = (detail: unknown, nativeEvent: globalThis.Event) => {
+    console.error('[VideoPlayer] Error loading video:', {
+      url: videoUrl,
+      detail,
+      nativeEvent,
+    });
+    if (nativeEvent.target && 'error' in nativeEvent.target) {
+      const mediaError = (nativeEvent.target as globalThis.HTMLVideoElement).error;
+      if (mediaError) {
+        console.error('[VideoPlayer] Media error details:', {
+          code: mediaError.code,
+          message: mediaError.message,
+        });
+      }
     }
   };
 
@@ -83,6 +107,7 @@ export function VideoPlayer({ videoUrl, filename, onMetadataLoad }: VideoPlayerP
         autoplay={false}
         className="video-player"
         onLoadedMetadata={handleLoadedMetadata}
+        onError={handleError}
       >
         <MediaProvider />
         <DefaultVideoLayout icons={defaultLayoutIcons} />

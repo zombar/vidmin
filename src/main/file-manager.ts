@@ -8,7 +8,7 @@ export async function selectVideoFile(): Promise<string | null> {
     filters: [
       {
         name: 'Video Files',
-        extensions: ['mp4', 'webm', 'mkv', 'avi', 'mov', 'flv', 'wmv', 'm4v'],
+        extensions: ['mp4', 'webm', 'mkv', 'avi', 'mov', 'flv', 'wmv', 'm4v', 'ts', 'm2ts', 'mts', 'mpg', 'mpeg', 'vob'],
       },
       { name: 'All Files', extensions: ['*'] },
     ],
@@ -37,6 +37,8 @@ export async function getVideoMetadata(filePath: string) {
 }
 
 export function getVideoFileUrl(filePath: string): string {
-  // Convert file path to file:// URL
-  return `file://${filePath}`;
+  // Use custom vidmin: protocol for proper video streaming support
+  // This protocol handler supports Range requests for video seeking
+  // Note: Use single slash to avoid hostname lowercasing (vidmin:/path not vidmin://path)
+  return `vidmin:${filePath}`;
 }

@@ -33,7 +33,7 @@ export function FileSelector({ onFileSelected }: FileSelectorProps) {
         {isSelecting ? 'Selecting...' : 'Select Video File'}
       </button>
       <p className="file-selector-hint">
-        Supported formats: MP4, WebM, MKV, AVI, MOV
+        Supported formats: MP4, WebM, MKV, AVI, MOV, FLV, WMV, TS, MPG, MPEG, VOB
       </p>
     </div>
   );

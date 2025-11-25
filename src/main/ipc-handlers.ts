@@ -2,6 +2,7 @@ import { ipcMain, dialog, app } from 'electron';
 import { selectVideoFile, getVideoMetadata, getVideoFileUrl } from './file-manager';
 import { downloadManager } from './download-manager';
 import path from 'path';
+import fs from 'fs/promises';
 
 export function setupIpcHandlers() {
   // Ping-pong test handler
@@ -82,13 +83,19 @@ export function setupIpcHandlers() {
         outputPath,
         format: options.format,
         onProgress: (progress) => {
-          event.sender.send('download-progress', downloadId, progress);
+          if (!event.sender.isDestroyed()) {
+            event.sender.send('download-progress', downloadId, progress);
+          }
         },
         onComplete: () => {
-          event.sender.send('download-complete', downloadId, outputPath);
+          if (!event.sender.isDestroyed()) {
+            event.sender.send('download-complete', downloadId, outputPath);
+          }
         },
         onError: (error) => {
-          event.sender.send('download-error', downloadId, error.message);
+          if (!event.sender.isDestroyed()) {
+            event.sender.send('download-error', downloadId, error.message);
+          }
         },
       });
 
@@ -113,5 +120,11 @@ export function setupIpcHandlers() {
   // Get all downloads
   ipcMain.handle('get-all-downloads', async () => {
     return downloadManager.getAllDownloads();
+  });
+
+  // File operations
+  ipcMain.handle('write-file', async (_event, filePath: string, data: Uint8Array) => {
+    // eslint-disable-next-line no-undef
+    await fs.writeFile(filePath, Buffer.from(data));
   });
 }

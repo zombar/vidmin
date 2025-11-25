@@ -39,6 +39,9 @@ contextBridge.exposeInMainWorld('electron', {
     selectFile: () => ipcRenderer.invoke('select-video-file') as Promise<VideoFileData | null>,
     getMetadata: (path: string) => ipcRenderer.invoke('get-video-metadata', path),
   },
+  file: {
+    writeFile: (path: string, data: Uint8Array) => ipcRenderer.invoke('write-file', path, data) as Promise<void>,
+  },
   download: {
     selectLocation: () => ipcRenderer.invoke('select-download-location') as Promise<string | null>,
     getDefaultLocation: () => ipcRenderer.invoke('get-default-download-location') as Promise<string>,

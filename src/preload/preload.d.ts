@@ -39,6 +39,9 @@ export interface IElectronAPI {
     selectFile: () => Promise<VideoFileData | null>;
     getMetadata: (path: string) => Promise<VideoFileData>;
   };
+  file: {
+    writeFile: (path: string, data: Uint8Array) => Promise<void>;
+  };
   download: {
     selectLocation: () => Promise<string | null>;
     getDefaultLocation: () => Promise<string>;
