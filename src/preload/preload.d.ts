@@ -42,6 +42,7 @@ export interface IElectronAPI {
   };
   file: {
     writeFile: (path: string, data: Uint8Array) => Promise<void>;
+    getPathForFile: (file: globalThis.File) => string;
   };
   download: {
     selectLocation: () => Promise<string | null>;

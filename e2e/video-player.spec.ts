@@ -223,7 +223,7 @@ test.describe('Video Player - Keyboard Shortcuts', () => {
 });
 
 // Helper function
-async function loadTestVideo(app: any, window: any, videoPath: string) {
+async function loadTestVideo(app: Awaited<ReturnType<typeof electron.launch>>, window: Awaited<ReturnType<Awaited<ReturnType<typeof electron.launch>>['firstWindow']>>, videoPath: string) {
   await window.waitForLoadState('domcontentloaded');
   await window.waitForTimeout(2000);
 

@@ -14,8 +14,18 @@ interface VideoMetadata {
   height: number;
 }
 
+interface VideoData {
+  filename: string;
+  path: string;
+  size: number;
+  format: string;
+  url: string;
+  createdAt: Date;
+  modifiedAt: Date;
+}
+
 function App() {
-  const [videoData, setVideoData] = useState<any>(null);
+  const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [metadata, setMetadata] = useState<VideoMetadata | null>(null);
 
   // Download state
@@ -128,8 +138,10 @@ function App() {
 
   const handleMetadataLoad = (meta: VideoMetadata) => {
     setMetadata(meta);
-    // Resize window to match video dimensions
-    window.electron.video.resizeWindowToVideo(meta.width, meta.height);
+    // Resize window to match video dimensions (only if we have valid dimensions)
+    if (meta.width && meta.height) {
+      window.electron.video.resizeWindowToVideo(meta.width, meta.height);
+    }
   };
 
   const handleVideoLoadError = () => {
@@ -226,9 +238,13 @@ function App() {
     // Check for files
     if (e.dataTransfer.files.length > 0) {
       const file = e.dataTransfer.files[0];
-      // In Electron, File objects have a path property
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const filePath = (file as any).path as string;
+      // Use webUtils.getPathForFile() for Electron 32+ (File.path was removed)
+      const filePath = window.electron.file.getPathForFile(file);
+
+      if (!filePath) {
+        console.error('File path is not available');
+        return;
+      }
 
       try {
         const metadata = await window.electron.video.getMetadata(filePath);
