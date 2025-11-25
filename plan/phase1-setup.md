@@ -47,7 +47,7 @@ test.describe('Application Launch', () => {
     const window = await app.firstWindow();
 
     const title = await window.title();
-    expect(title).toBe('Vidmin Video Player');
+    expect(title).toBe('Vidmin Player');
 
     await app.close();
   });
@@ -359,7 +359,7 @@ function createWindow() {
     height: 700,
     minWidth: 800,
     minHeight: 600,
-    title: 'Vidmin Video Player',
+    title: 'Vidmin Player',
     webPreferences: {
       preload: path.join(__dirname, '../preload/preload.js'),
       contextIsolation: true,
@@ -475,10 +475,10 @@ function App() {
   return (
     <div className="app">
       <header data-testid="app-header" className="app-header">
-        <h1>Vidmin Video Player</h1>
+        <h1>Vidmin Player</h1>
       </header>
       <main data-testid="main-container" className="main-container">
-        <p>Welcome to Vidmin - Your Advanced Video Player</p>
+        <p>Welcome to Vidmin Player - Your Advanced Video Player</p>
         {pingResult && <p data-testid="ipc-test">IPC Test: {pingResult}</p>}
       </main>
     </div>
@@ -570,7 +570,7 @@ Create `index.html`:
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'">
-    <title>Vidmin Video Player</title>
+    <title>Vidmin Player</title>
   </head>
   <body>
     <div id="root"></div>

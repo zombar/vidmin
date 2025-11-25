@@ -1,10 +1,10 @@
-# Vidmin Video Player - Makefile
+# Vidmin Player - Makefile
 
 .PHONY: help install dev build package test test-e2e test-unit clean
 
 # Default target
 help:
-	@echo "Vidmin Video Player - Available Commands:"
+	@echo "Vidmin Player - Available Commands:"
 	@echo ""
 	@echo "  make install    - Install all dependencies"
 	@echo "  make dev        - Run development server with Electron"

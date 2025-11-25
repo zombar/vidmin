@@ -1171,7 +1171,7 @@ function App() {
   return (
     <div className="app">
       <header data-testid="app-header" className="app-header">
-        <h1>Vidmin Video Player</h1>
+        <h1>Vidmin Player</h1>
         {videoData && (
           <button
             onClick={() => setVideoData(null)}

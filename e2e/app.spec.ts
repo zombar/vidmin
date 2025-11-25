@@ -25,7 +25,7 @@ test.describe('Application Launch', () => {
     const window = await app.firstWindow();
 
     const title = await window.title();
-    expect(title).toBe('Vidmin Video Player');
+    expect(title).toBe('Vidmin Player');
 
     await app.close();
   });

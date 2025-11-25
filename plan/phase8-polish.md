@@ -384,7 +384,7 @@ Post-release:
 
 ## Conclusion
 
-Upon completion of Phase 6, Vidmin Video Player will be a production-ready application with:
+Upon completion of Phase 6, Vidmin Player will be a production-ready application with:
 -  Full test coverage with TDD methodology
 -  Robust error handling and recovery
 -  Excellent performance and stability

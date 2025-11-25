@@ -1,4 +1,4 @@
-# Vidmin Video Player - Implementation Plan
+# Vidmin Player - Implementation Plan
 
 ## Project Overview
 

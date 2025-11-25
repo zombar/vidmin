@@ -77,7 +77,7 @@ function createWindow() {
     height: 900,
     minWidth: 800,
     minHeight: 700,
-    title: 'Vidmin Video Player',
+    title: 'Vidmin Player',
     frame: false,
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 16, y: 16 },
