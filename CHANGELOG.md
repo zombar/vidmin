@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.6](https://github.com/zombar/vidmin/compare/vidmin-v0.1.5...vidmin-v0.1.6) (2025-11-26)
+
+
+### Bug Fixes
+
+* clean up import formatting in main process ([5699504](https://github.com/zombar/vidmin/commit/5699504969b290815b45189b200b17f548c846c5))
+* clean up import formatting in main process ([d330b9e](https://github.com/zombar/vidmin/commit/d330b9e8bdfb25c1be2280e165efe93ffbdef559))
+
 ## [0.1.5](https://github.com/zombar/vidmin/compare/vidmin-v0.1.4...vidmin-v0.1.5) (2025-11-25)
 
 

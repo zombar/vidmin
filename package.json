@@ -1,6 +1,6 @@
 {
   "name": "vidmin",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Advanced video player with progressive download support",
   "main": "dist/main/main.js",
   "type": "module",
